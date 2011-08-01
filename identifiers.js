@@ -103,19 +103,41 @@ idCheck = function(isbn) {
 	var valid13 = ((10 - sum13 % 10) % 10) == check13;
 	var matches = false;
 	
+	var num_upc = num10;
+	var num_ean = num13;
+	var num_issn13 = num13;
+
+	if(!valid10) {num10 = false};
+	if(!valid_upc) {num_upc = false};
+	if(!valid13) {num_ean = false; num13 = false;};
+
+	// Enforce that UPC-13 is an EAN from Bookland, with prefix 978 or 979
+	if(num13 && !num13.match(/^97[89]/)) num13 = false;
+
+	// Extract an ISSN from its EAN representation, prefix 977
+	if (num_ean && num_ean.match(/^977/)) {
+		first7 = num_ean.replace(/[^0-9x]/gi, '').substr(3, 7);
+		num8 = first7.concat(getCheckDigit(first7, issn, 11));
+		valid8 = true;
+	}
+	
 	// Since ISSNs have a standard hyphen placement, we can add a hyphen
 	if (valid8 && (matches = num8.match(/([0-9]{4})([0-9]{3}[0-9Xx])/))) {
 		num8 = matches[1] + '-' + matches[2];
 	} 
-
-	var num_upc = num10;
-	var num_ean = num13;
-
 	if(!valid8) {num8 = false};
-	if(!valid10) {num10 = false};
-	if(!valid_upc) {num_upc = false};
-	if(!valid13) {num_ean = false; num13 = false;};
-	// Enforce that UPC-13 is an EAN from Bookland, with prefix 978 or 979
-	if(num13 && !num13.match(/^97[89]/)) num13 = false;
+
+
 	return {"isbn10" : num10, "isbn13" : num13, "issn" : num8, "upc" : num_upc, "ean" : num_ean};
+}
+
+function getCheckDigit(input, coefficients, modulo) {
+	var i = 0;
+	var sum = 0;
+	for (i=0; i < coefficients.length; i++) {
+		sum += input.charAt(i) * coefficients[i];
+	}
+
+	var check = ((modulo - sum % modulo) % modulo);
+	return ( check == 10 ) ? "X" : check;
 }
