@@ -39,6 +39,14 @@ assertTrue(idCheck("9785776118555").isbn13);
 print("[1mISSN[0m");
 assertEqual(idCheck("0378-5955").issn, "0378-5955");
 assertTrue(idCheck("0378-5955").issn);
+
 print("[1mISSN as EAN[0m");
 assertTrue(idCheck("9770317847001").issn);
 assertEqual(idCheck("9770317847001").issn, "0317-8471");
+
+print("[1mSICI[0m");
+assertTrue(idCheck("0095-4403(199502/03)21:3<12:WATIIB>2.0.TX;2-J").sici);
+assertTrue(idCheck("0095-4403(199502/03)21:3<12:WATIIB>2.0.TX;2-J").issn);
+assertTrue(idCheck("0002-8231(199412)45:10<737:TIODIM>2.3.TX;2-M").issn);
+assertTrue(idCheck("0363-0277(19950315)120:5<32:IAA>2.0.TX;2-0").issn);
+assertTrue(idCheck("0363-0277(19950315)120:5<>1.0.TX;2-V").issn);

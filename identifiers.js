@@ -1,4 +1,15 @@
-idCheck = function(isbn) {
+var exports = [idCheck, getCheckDigit, parseSICI];
+
+var idCheck = function(isbn) {
+	var data = parseSICI(isbn);
+	if (data !== false)
+		return {"isbn10" : false,
+			"isbn13" : false,
+			"issn" : data.ISSN,
+			"upc" : false,
+			"ean" : false,
+			"sici" : isbn};
+	
 	// For ISBN 10, multiple by these coefficients, take the sum mod 11
 	// and subtract from 11
 	var isbn10 = [10, 9, 8, 7, 6, 5, 4, 3, 2];
@@ -131,7 +142,7 @@ idCheck = function(isbn) {
 	return {"isbn10" : num10, "isbn13" : num13, "issn" : num8, "upc" : num_upc, "ean" : num_ean};
 }
 
-function getCheckDigit(input, coefficients, modulo) {
+var getCheckDigit = function(input, coefficients, modulo) {
 	var i = 0;
 	var sum = 0;
 	for (i=0; i < coefficients.length; i++) {
@@ -140,4 +151,47 @@ function getCheckDigit(input, coefficients, modulo) {
 
 	var check = ((modulo - sum % modulo) % modulo);
 	return ( check == 10 ) ? "X" : check;
+}
+
+/*
+Parses Serial Item and Contribution Identifiers (SICI)
+ANSI/NISO standard Z39.56
+http://www.niso.org/standards/z39-56-1996r2002 
+In MARC: http://www.loc.gov/marc/bibliographic/bd024.html
+As URNs: http://tools.ietf.org/html/draft-hakala-sici-01
+More info: http://tools.ietf.org/html/rfc2288
+Also see Wikipedia: http://en.wikipedia.org/wiki/Serial_Item_and_Contribution_Identifier
+
+Examples from Wikipedia:
+Abstract from Lynch, Clifford A. “The Integrity of Digital Information; Mechanics and Definitional Issues.” JASIS 45:10 (Dec. 1994) p. 737-44
+SICI: 0002-8231(199412)45:10<737:TIODIM>2.3.TX;2-M
+
+Bjorner, Susanne. “Who Are These Independent Information Brokers?” Bulletin of the American Society for Information Science, Feb-Mar. 1995, Vol. 21, no. 3, page 12
+SICI: 0095-4403(199502/03)21:3<12:WATIIB>2.0.TX;2-J
+
+ */
+var parseSICI = function(input) {
+	var data = {};
+	var pieces, chronology, enumeration, contribution, csi, dpi, mfi, version, check;
+	pieces = input.match(/([0-9]{4}-[0-9]{4})\(([^)]*)\)([^<]*)<([^>]*)>([0-9])\.([0-9])\.([A-Z]{2});([0-9])-([0-9A-Z])/);
+	if (!pieces) return false;
+	data.ISSN = pieces[1];
+	data.chronology = pieces[2];
+	data.enumeration = pieces[3];
+	data.contribution = pieces[4];
+	data.csi = pieces[5];
+	data.dpi = pieces[6];
+	data.mfi = pieces[7];
+	data.version = pieces[8];
+	data.check = pieces[9];
+	//print(input);
+	//outer(data);
+	return data;
+}
+
+function outer(inner) {
+	var i;
+	for (i in inner) {
+		print(i + " => " + inner[i]);
+	}
 }
