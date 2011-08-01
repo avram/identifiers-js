@@ -1,3 +1,4 @@
+#!/usr/bin/rhino
 load("identifiers.js");
 
 var test = 0;
