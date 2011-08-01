@@ -1,0 +1,5 @@
+JavaScript parsing of various identifiers
+
+Supports ISSN, ISBN-10, ISBN-13, EAN, ISMN
+
+May later support SICI
