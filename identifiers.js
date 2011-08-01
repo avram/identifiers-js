@@ -18,12 +18,13 @@
 
 // Takes the first 8 valid digits and tries to read an ISSN,
 // takes the first 10 valid digits and tries to read an ISBN 10 or a UPC,
-// and takes the first 13 valid digits to try to read an ISBN 13
-// Returns an object with four attributes:
+// and takes the first 13 valid digits to try to read an ISBN 13 or an EAN
+// Returns an object with five attributes:
 // 	"issn" 
 // 	"isbn10"
 // 	"isbn13"
 // 	"upc"
+// 	"ean"
 // Each will be set to a valid identifier if found, and otherwise be a
 // boolean false.
 
