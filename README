@@ -1,5 +1,37 @@
 JavaScript parsing of various identifiers
 
-Supports ISSN, ISBN-10, ISBN-13, EAN, ISMN
+Based on ISBN Users' Manual (http://www.isbn.org/standards/home/isbn/international/html/usm4.htm)
+and the Wikipedia treatment of ISBN (http://en.wikipedia.org/wiki/International_Standard_Book_Number)
+and the Wikipedia treatment of ISSN (http://en.wikipedia.org/wiki/International_Standard_Serial_Number)
 
-May later support SICI
+This will also check ISMN validity, although it does not distinguish from their
+neighbors in namespace, ISBN-13. It does not handle pre-2008 M-prefixed ISMNs; see
+http://en.wikipedia.org/wiki/International_Standard_Music_Number
+
+This does not validate multiple identifiers in one field,
+but it will gracefully ignore all non-number detritus,
+such as extraneous hyphens, spaces, and comments.
+
+It currently maintains hyphens in non-initial and non-final position,
+discarding consecutive ones beyond the first as well.
+
+It also adds the customary hyphen to valid ISSNs.
+
+Takes the first 8 valid digits and tries to read an ISSN,
+takes the first 10 valid digits and tries to read an ISBN 10 or a UPC,
+and takes the first 13 valid digits to try to read an ISBN 13 or an EAN
+Returns an object with five attributes:
+	"issn" 
+	"isbn10"
+	"isbn13"
+	"upc"
+	"ean"
+Each will be set to a valid identifier if found, and otherwise be a
+boolean false.
+
+The UPC logic is for a 10-digit UPC-A; the newer EAN system is equivalent
+to the isbn13 algorithm.
+
+There could conceivably be a valid ISBN-13 with an ISBN-10
+substring; this should probably be interpreted as the latter, but it is a
+client UI issue.
