@@ -3,10 +3,11 @@ JavaScript parsing of various identifiers
 Based on ISBN Users' Manual (http://www.isbn.org/standards/home/isbn/international/html/usm4.htm)
 and the Wikipedia treatment of ISBN (http://en.wikipedia.org/wiki/International_Standard_Book_Number)
 and the Wikipedia treatment of ISSN (http://en.wikipedia.org/wiki/International_Standard_Serial_Number)
+and the Wikipedia treatment of SICI (http://en.wikipedia.org/wiki/Serial_Item_and_Contribution_Identifier)
 
 This will also check ISMN validity, although it does not distinguish from their
-neighbors in namespace, ISBN-13. It does not handle pre-2008 M-prefixed ISMNs; see
-http://en.wikipedia.org/wiki/International_Standard_Music_Number
+neighbors in namespace, ISBN-13. It does not handle pre-2008 M-prefixed ISMNs;
+see http://en.wikipedia.org/wiki/International_Standard_Music_Number
 
 This does not validate multiple identifiers in one field,
 but it will gracefully ignore all non-number detritus,
@@ -19,13 +20,19 @@ It also adds the customary hyphen to valid ISSNs.
 
 Takes the first 8 valid digits and tries to read an ISSN,
 takes the first 10 valid digits and tries to read an ISBN 10 or a UPC,
-and takes the first 13 valid digits to try to read an ISBN 13 or an EAN
-Returns an object with five attributes:
+and takes the first 13 valid digits to try to read an ISBN 13 or an EAN.
+
+It also tries to parse the input as an SICI; if found, it will populate the
+SICI attribute with the proper SICI and the ISSN with the constituent ISSN.
+A later version will return the other metadata encoded by SICI as well.
+
+Returns an object with six attributes:
 	"issn" 
 	"isbn10"
 	"isbn13"
 	"upc"
 	"ean"
+	"sici"
 Each will be set to a valid identifier if found, and otherwise be a
 boolean false.
 
